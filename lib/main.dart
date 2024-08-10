@@ -1,13 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project/constants/app_assets.dart';
+import 'package:project/model/task.dart';
 import 'package:project/pages/animations/animated_container_page.dart';
 import 'package:project/pages/animations/animated_opacity_page.dart';
-import 'package:project/pages/task/animated_task.dart';
+import 'package:project/pages/task/home_page.dart';
 import 'package:project/pages/watch/stop_watch_page.dart';
 import 'package:project/pages/animations/tween_animation_builder_page.dart';
+import 'package:project/persistence/hive_data_store.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final dataStore = HiveDataStore();
+  await dataStore.init();
+  await dataStore.createDemoTasks(tasks: [
+    Task.create(iconName: AppAssets.dog),
+    Task.create(iconName: AppAssets.carrot),
+    Task.create(iconName: AppAssets.html),
+    Task.create(iconName: AppAssets.dumbbell),
+    Task.create(iconName: AppAssets.smoking),
+    Task.create(iconName: AppAssets.book),
+  ]);
+  runApp( ProviderScope(overrides: [
+    dataStoreProvider.overrideWithValue(dataStore),
+  ],child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -18,12 +34,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(scaffoldBackgroundColor: Colors.black),
-      home: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text("Animations Playground"),
-        ),
-        body: AnimationExampleList(),
+      home: const Scaffold(
+        body: HomePage(),
       ),
     );
   }
@@ -62,9 +74,6 @@ class AnimationExampleList extends StatelessWidget {
               } else if (index == 3) {
                 Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => const StopWatch()));
-              } else {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const AnimatedTask(iconName: AppAssets.dog,)));
               }
             },
           );

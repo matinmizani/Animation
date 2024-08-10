@@ -10,19 +10,20 @@ class CenteredSvgIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isSvg = assets.endsWith(".svg");
-    final factor =isSvg? 0.3:0.08;
+    final factor = isSvg ? 0.5 : 0.6;
     return FractionallySizedBox(
-      widthFactor: factor,
-      heightFactor: factor,
-      child: isSvg
-          ? SvgPicture.asset(
-              assets,
-              color: color,
-            )
-          : Text(
-              assets.substring(0, 1),
-              style: TextStyle(color: color),
-            ),
-    );
+        widthFactor: factor,
+        heightFactor: factor,
+        child: isSvg
+            ? SvgPicture.asset(
+                assets,
+                color: color,
+              )
+            : FittedBox(
+                child: Text(
+                  assets.substring(0, 1),
+                  style: TextStyle(color: color),
+                ),
+              ));
   }
 }

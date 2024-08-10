@@ -7,10 +7,8 @@ class ElapsedTimeTextBasic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hundreds = (elapsed.inMicroseconds / 10) % 100;
     final seconds = elapsed.inSeconds % 60;
     final minutes = elapsed.inMinutes % 60;
-    final hundredsStr = hundreds.toStringAsFixed(0).padLeft(2, "0");
     final secondsStr = seconds.toStringAsFixed(0).padLeft(2, "0");
     final minutesStr = minutes.toStringAsFixed(0).padLeft(2, "0");
     return Center(

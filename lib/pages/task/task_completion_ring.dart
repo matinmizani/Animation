@@ -9,22 +9,11 @@ class TaskCompletionRing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.orange.shade400,
-      body: Center(
-        child: SizedBox(
-          width: 240,
-          child: AspectRatio(
-            aspectRatio: 1.0,
-            child: CustomPaint(
-              painter: RingPainter(
-                  progress: progress,
-                  taskNotCompletedColor: Colors.black,
-                  taskCompletedColor: Colors.white),
-            ),
-          ),
-        ),
-      ),
+    return CustomPaint(
+      painter: RingPainter(
+          progress: progress,
+          taskNotCompletedColor: Colors.black,
+          taskCompletedColor: Colors.white),
     );
   }
 }
@@ -42,20 +31,26 @@ class RingPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    print(size);
+    final notCompleted = progress < 1.0;
     final strokeWith = size.width / 15;
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = (size.width - strokeWith) / 2;
-    final backgroundPaint = Paint()
-      ..isAntiAlias = true
-      ..strokeWidth = strokeWith
-      ..color = taskNotCompletedColor
-      ..style = PaintingStyle.stroke;
-    canvas.drawCircle(center, radius, backgroundPaint);
+    final radius =
+        notCompleted ? (size.width - strokeWith) / 2 : size.width / 2;
+    if (notCompleted) {
+      final backgroundPaint = Paint()
+        ..isAntiAlias = true
+        ..strokeWidth = strokeWith
+        ..color = taskNotCompletedColor
+        ..style = PaintingStyle.stroke;
+      canvas.drawCircle(center, radius, backgroundPaint);
+    }
+
     final foregroundPaint = Paint()
       ..isAntiAlias = true
       ..strokeWidth = strokeWith
       ..color = taskCompletedColor
-      ..style = PaintingStyle.stroke;
+      ..style = notCompleted ? PaintingStyle.stroke : PaintingStyle.fill;
     canvas.drawArc(Rect.fromCircle(center: center, radius: radius), -pi / 2,
         2 * pi * progress, false, foregroundPaint);
   }
